@@ -1,0 +1,4 @@
+/bin/
+*.class
+wheat/*/TestLists.java
+chaff*/*/TestLists.java
