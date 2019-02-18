@@ -6,4 +6,4 @@ chmod 400 ./source/id_rsa > /dev/null
 cp ./source/config ~/.ssh/config > /dev/null
 git clone --quiet git@github.com:macedo22/autograder-demo.git > /dev/null
 rm ./source/id_rsa
-bash ucsd-cse599-pa1-grading/grade
+bash autograder-demo/ucsd-cse599-pa1-grading/grade
