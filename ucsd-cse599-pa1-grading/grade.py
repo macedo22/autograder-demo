@@ -40,7 +40,7 @@ BASE_CLASSPATH="src/:lib/gson-2.8.2.jar:lib/hamcrest-core-1.3.jar:lib/junit-4.12
 ####################################################################################################
 
 # All paths in student submission to confirm all exist.
-REQUIRED_FILES = ["Someclass.java"]
+REQUIRED_FILES = ["SomeClass.java"]
 
 missing_files = check_files_exist(README_PATH, STUDENT_PATH + STUDENT_PKG, REQUIRED_FILES)
 
