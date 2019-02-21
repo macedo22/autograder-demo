@@ -1,63 +1,27 @@
-# Grader for pa3
-
-Note that this just does not work at all...
-
-Note that this has all kinds of errors when you open in Eclipse because of the
-way these scripts (ab)use the classpath.
-
+# Grader for autograder-demo
 
 src/
   JSONRunner.java
   
-    This file runs the test suite in cse12pa3student.TestSolver and prints the
-    results in JSON format to standard out. The results map from test header to
-    test output. For example:
+    This file runs the test suite in cse599pa1student.MethodTest and prints the
+    results in JSON format to standard out. 
 
-    {'testPaginate2[Doubly-LinkedList](cse12pa3student.TestLists)':
-     'expected:<[c]> but was:<[FAIL]>',
+pa1tests/MethodTest.java
 
-     'testPaginate2[ArrayList](cse12pa3student.TestLists)':
-     'expected:<[c]> but was:<[FAIL]>'}
-
-    Here the key is actually longer than the message, and uniquely identifies
-    the test method that was run. The keys will be used to determine if chaff
-    implementations fail in a different way than the wheat.
-
-wheat/cse12pa3student
-  
-  This directory holds a copy of the reference implementation with
-  TestSolver.java removed
-
-chaff*/cse12pa3student
-
-  Each chaffSOMETHING directory holds a copy of the reference implementation
-  that has in some way been _broken_. The chaff title describes how, and
-  implementations should be commented around where the breakage happens with
-  CHAFF in the comment.
-
-pa3-implementation
-
-  This is a copy of the reference solution, but it represents where a student's
-  submission should go. This will need to be parameterized better to work with
-  the autograder, which puts the submission at /autograder/submission/.
+  The tests that we run on 4 student methods.
 
 grade
 
-  The entrypoint for the grader (called from the support script we built)
+  The entrypoint for the grader (called from run_autograder)
 
 grade.py
 
   This is where the real action happens. 
 
-  The idea here is to copy the students' test file into the wheat directory and
-  the various chaff directories, and then run JSONRunner with the classpath set
-  to that directory. This is why each of the wheat and chaff*/ directories have
-  the cse12pa3student subdirectory -- all the student code is expecting to be
-  in a package with that name.
+  The idea here is to check for correct files and directory structure submitted,
+  compile the student code and our tests, copy our tests into the student directory,
+  then run JSONRunner with the classpath set to that directory.
 
-  JSONRunner will emit the results for each of the wheat and chaff runs in
-  JSON, and then grade.py compares them to generate the final report.
-
-
-TODO
- NOTHING WORKS! MAKE IT WORK!
+  JSONRunner will emit the results for each of the tests in
+  JSON, and then grade.py attributes points for each test
+  (pass or fail) and generates the final report.
