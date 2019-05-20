@@ -2,6 +2,15 @@
 
 **See Joe Politz's setup recommendations: https://github.com/ucsd-cse12-w17/pa-grading**
 
+To run this autograder locally:
+
+1) Clone this repository and create a local directory named `submission` in
+   the same directory that this cloned repository exists.
+2) Put sample student submission files within this `submission` directory. This
+   file structure imitates the file structure Gradescope uses.
+3) To execute, run `bash ucsd-cse599-pa1-grading/grade` from within the top
+   directory of this repository.
+
 `run_autograder`
 
   Entry point for the autograder on Gradescope. This is set up to clone this 
