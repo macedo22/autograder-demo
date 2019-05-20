@@ -14,8 +14,8 @@ public class SomeClassTester {
 
     @Test(timeout = timeLimit)
     public void testMultiplyTwoInts(){
-        int studentResult = SomeClass.multiplyTwoInts(2, 2);
-        int refResult = RefSomeClass.multiplyTwoInts(2, 2);
+        int studentResult = SomeClass.multiplyTwoInts(7, 2);
+        int refResult = RefSomeClass.multiplyTwoInts(7, 2);
         assertEquals(refResult, studentResult);
     }
 

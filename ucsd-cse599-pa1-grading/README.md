@@ -52,4 +52,5 @@ Adapted from Joseph Politz, 2018
 
   `JSONRunner.java` will run `pa1-implementation/SomeClassTester.java` and emit the results for each 
   of tests in JSON, and then `grade.py` assigns scoring to generate the final
-  report to be output in Gradescope.
+  report to be output in Gradescope. The JSON output is printed to the terminal when run locally,
+  and written to `/autograder/results/results.json` when run on Gradescope.
