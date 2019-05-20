@@ -2,3 +2,6 @@ id_rsa
 pa.zip
 ucsd-cse599-pa1-grading/helper_methods.pyc
 ucsd-cse599-pa1-grading/out_tests.json
+ucsd-cse599-pa1-grading/stderr
+ucsd-cse599-pa1-grading/graders/*.class
+ucsd-cse599-pa1-grading/pa1-implementation/*.class

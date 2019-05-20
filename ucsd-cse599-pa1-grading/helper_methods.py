@@ -1,12 +1,6 @@
 import os
 import json
 
-def get_jdk11_path(partial_paths):
-    for path in partial_paths:
-        if(os.path.isdir(path)):
-            return path
-    return "../../../"
-
 
 def replaceStringInFile(path, filename, stringToReplace, stringReplacement):
     studentFile = open(path).read()
@@ -16,48 +10,50 @@ def replaceStringInFile(path, filename, stringToReplace, stringReplacement):
 
     # Write the file out again
     with open(path, 'w') as file:
-      file.write(studentFileUpdated)
+        file.write(studentFileUpdated)
 
      # return the name of the file if it contains print statements
     if stringToReplace in studentFile:
-         return filename + ", "
-    return ""
+        return filename + ', '
+    return ''
+
 
 def check_file_exists(submission_path, file_name):
-  path = os.path.join(submission_path, file_name)
-  if not(os.path.exists(path)):
-      return file_name + ", "
-  else:
-      return ""
+    path = os.path.join(submission_path, file_name)
+    if not(os.path.exists(path)):
+        return file_name + ', '
+    else:
+        return ''
 
 
-def check_files_exist(readme_path, submission_path, files_array):
+def check_files_exist(submission_path, files_array, additional_msg = ""):
     missing_files = ""
     for file in files_array:
         missing_files += check_file_exists(submission_path, file)
-    missing_files += check_file_exists(readme_path, 'README.md')
 
     # Update final output for missing files
     if len(missing_files) > 0:
-      missing_files = missing_files[0:-2]  # remove trailing comma and whitespace
+        missing_files = "Missing files: " + missing_files[0:-2] + '\n\n' + additional_msg  # remove trailing comma and whitespace
     else:
-      missing_files = "All required files have been found."
+        missing_files = 'All required files have been found.' + '\n\n' + additional_msg
 
     missing_files = [{
-      'score': 0,
-      'max': 0,
-      'name': "MISSING FILES: if any files are missing, please confirm you have uploaded the correct files, with the correct directory structure.",
-      'output': missing_files
+        'score': 0,
+        'max': 0,
+        'name': 'Checking for any MISSING FILES: if any files are missing, please'
+                + ' confirm you have uploaded the correct files, with the correct'
+                + ' file paths and names.',
+        'output': missing_files
     }]
 
     return missing_files
 
 
 def output_score(total_score):
-    if(os.path.isdir("/autograder/results")):
-    	resultsjson = open("/autograder/results/results.json","w")
-    	resultsjson.write(json.dumps(total_score))
-    	resultsjson.close()
+    if(os.path.isdir('/autograder/results')):
+        resultsjson = open('/autograder/results/results.json','w')
+        resultsjson.write(json.dumps(total_score))
+        resultsjson.close()
     else:
-    	print("local test")
+        print("local test")
     	print json.dumps(total_score, indent=4, sort_keys=True)

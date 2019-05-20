@@ -3,127 +3,148 @@ import os
 import json
 from subprocess import call, check_output
 import subprocess
-from helper_methods import check_files_exist, get_jdk11_path, output_score
-
-STUDENT_PKG = "cse599pa1student"
-
-# TODO confirm tests
+from helper_methods import check_files_exist, output_score
 
 ####################################################################################################
 # GET CORRECT PATHS
 ####################################################################################################
 
 # get correct paths for javac and java
-jdk11_path = get_jdk11_path(["/home/sophia/", "/home/alex/" ])
-JAVA_PATH= jdk11_path + "jdk-11/bin/java"
-JAVAC_PATH= jdk11_path + "jdk-11/bin/javac"
+JAVA_PATH= 'java'
+JAVAC_PATH= 'javac'
 
 # get correct path for student submission
-if(os.path.isdir("/autograder/results")):
-  STUDENT_PATH = "/autograder/submission/pa1-starter-w19/src/" # AUTOGRADER_SUBMISSION_PATH
+if(os.path.isdir('/autograder/results')):
+    STUDENT_PATH = '/autograder/submission/' # AUTOGRADER_SUBMISSION_PATH
 else:
-  STUDENT_PATH = "../../submission/pa1-starter-w19/src/" # LOCAL_SUBMISSION_PATH
+    STUDENT_PATH = '../../submission/' # LOCAL_SUBMISSION_PATH
 
 # remove any student .class files
-if os.path.isdir(STUDENT_PATH + "cse599pa1student"):
-    for file in os.listdir(STUDENT_PATH + "cse599pa1student"):
+if os.path.isdir(STUDENT_PATH):
+    for file in os.listdir(STUDENT_PATH):
         if fnmatch.fnmatch(file, '*.class'):
-            call(["rm", STUDENT_PATH + "cse599pa1student/" + file])
+            call(['rm', STUDENT_PATH + '/' + file])
 
-# Remove src/ to get readme path
-README_PATH = STUDENT_PATH[:-4]
-
-BASE_CLASSPATH="src/:lib/gson-2.8.2.jar:lib/hamcrest-core-1.3.jar:lib/junit-4.12.jar"
+BASE_CLASSPATH='.:lib/gson-2.8.2.jar:lib/hamcrest-core-1.3.jar:lib/junit-4.12.jar'
+REFIMP = './pa1-implementation/'
 
 ####################################################################################################
-# CHECK TO SEE IF ALL STUDENT FILES REQUIRED FOR PA6 EXIST
+# CHECK TO SEE IF ALL STUDENT FILES REQUIRED FOR PA1 EXIST
 ####################################################################################################
 
 # All paths in student submission to confirm all exist.
-REQUIRED_FILES = ["SomeClass.java"]
-
-missing_files = check_files_exist(README_PATH, STUDENT_PATH + STUDENT_PKG, REQUIRED_FILES)
+REQUIRED_FILES = ['SomeClass.java']
+missing_files = check_files_exist(STUDENT_PATH, REQUIRED_FILES)
+all_tests = missing_files
 
 ####################################################################################################
 # START TESTING
 ####################################################################################################
-refTestSolverspath = os.path.join("./pa1tests/MethodTest.java")
 
-RUNNER = os.path.join("src", "cse599pa1grading", "grader", "JSONRunner.java")
-ALLJAVA = os.path.join("src", "cse599pa1grading", "grader", "*.java")
-RUNNERCLASS = os.path.join("cse599pa1grading", "grader", "JSONRunner")
 
-def test_on():
-  impl_name = STUDENT_PATH
-  impl_classpath = BASE_CLASSPATH + ":" + impl_name + "/"
-  copy_dir = os.path.join(STUDENT_PATH, STUDENT_PKG)
-  call(["cp",refTestSolverspath,copy_dir])
-  out, err = subprocess.Popen(" ".join([JAVAC_PATH, "-cp", impl_classpath, ALLJAVA]),
-                     stdout=subprocess.PIPE,
-                     stdin=subprocess.PIPE,
-                     stderr=subprocess.PIPE,
-                     shell=True).communicate("")
-  compiler_out = err
-  if compiler_out != "": return compiler_out # Indicates some compile error
+def copy_files_to_student_submission(file_names):
+    for file in file_names:
+        call(['cp', os.path.join(REFIMP, file), STUDENT_PATH])
 
-  out, err = subprocess.Popen(" ".join([JAVA_PATH, "-cp", impl_classpath, RUNNERCLASS, "./out_tests.json"]),
-										 stdout=subprocess.PIPE,
-										 stdin=subprocess.PIPE,
-										 stderr=subprocess.PIPE,
-										 shell=True).communicate("")
-  run_err = err
-  run_out = out
-  results_str = run_out
-  if run_err != "": return run_out + "\n" + run_err
 
-  f = open("./out_tests.json","r")
-  results_str = f.read()
-  f.close()
+# Check that student code compiles successfully
+def compile_test(classpath, files_to_compile):
+    javac_command = [JAVAC_PATH, '-cp', classpath]
+    javac_command.extend(files_to_compile)
+    call_output = open('stderr', 'w')
+    exit_code = call(javac_command, stdout=call_output, stderr=call_output)
+    print("Exit code from compiling %s: %d" % (files_to_compile, exit_code))
 
-  return json.loads(results_str)
+    if exit_code == 0:
+        return {}
+    else:
+        studentCompileError = open('stderr').read()
+        return studentCompileError
+
+
+def run(RUNNER, RUNNERCLASS, files_to_copy, files_to_compile):
+    classpath = STUDENT_PATH + ':' + BASE_CLASSPATH
+    call(["cp", os.path.join('./json-graders/' + RUNNER), STUDENT_PATH])
+    copy_files_to_student_submission(files_to_copy)
+    files_to_compile.append(STUDENT_PATH + RUNNER)
+    compile_result = compile_test(classpath, files_to_compile)
+
+    if type(compile_result) == str:
+        return compile_result
+    else:
+        check_output([JAVA_PATH, '-cp', classpath, RUNNERCLASS, './out_tests.json'])
+        f = open('./out_tests.json','r')
+        results_str = f.read()
+        f.close()
+        return json.loads(results_str)
+
+
+# Get JSON output of autograder tests
+def get_student_output(test_failures, test_points, test_location):
+    student_results = []
+    if type(test_failures) == str:
+        student_results.append({
+            'score': 0,
+            'name': 'Compile Error (%s)' % test_location,
+            'output': 'Your implementation failed to compile with the following message:\n\n' + test_failures,
+        })
+    else:
+        for (name, pts) in test_points.iteritems():
+            name += ('(%s)' % test_location)
+            if not(name in test_failures):
+                student_results.append({
+                    'score': pts,
+                    'name': name + ' [Passed]',
+                    'output': 'Passed this test!'
+                })
+            else:
+                failure_msg = test_failures[name]
+                if 'No X11 DISPLAY variable was set' in failure_msg:
+                    failure_msg = 'Please remove any calls to the explore or play method from this method'
+                student_results.append({
+                    'score': 0,
+                    'name': name + ' [Failed]',
+                    'output': 'Failed this test with the following message: \n\n' + failure_msg
+                })
+    student_results = sorted(student_results, key=lambda k: k['name'])
+    return student_results
 
 
 ####################################################################################################
-# Test student implementations
+# Test student SomeClass method implementations
 ####################################################################################################
-test_points = {
-  "testAddTwoInts": 1,
-  "testMultiplyTwoInts": 1,
-  "testSumIntArray": 1,
-  "testConcatStringArray": 1,
+
+some_class_points = {
+    'testAddTwoInts': 1,
+    'testMultiplyTwoInts': 1,
+    'testSumIntArray': 1,
+    'testConcatStringArray': 1
 }
 
-imp_failures = test_on()
-print(imp_failures)
-
-if type(imp_failures) == str:
-  total_score = {
-    "score": 0,
-    "output": "Your implementation failed to compile/run with the following message:\n\n" + imp_failures,
-    'tests': missing_files
-  }
-else:
-  imp_parts = []
-  for (name, pts) in test_points.iteritems():
-    name += "(cse599pa1student.MethodTest)"
-    if not(name in imp_failures):
-      imp_parts.append({
-        'score': pts,
-        'name': name,
-        'output': 'Passed this test. [%s/%s]' % (pts, pts)
-      })
-    else:
-      imp_parts.append({
-        'score': 0,
-        'name': name,
-        'output': 'Failed this test. [%s/%s]\n%s' % (0, pts, imp_failures[name])
-      })
-  total_score = {
-    'output': "Note that this just gives you success/failure information on several tests - passing all of these does NOT mean you get full credit on the assignment. These are a subset of the tests we'll use to grade your submission that help you get feedback on where you might be making a mistake.",
-    'tests': missing_files + imp_parts
-  }
+some_class_failures = run(
+    'JSONRunner.java',
+    'JSONRunner',
+    ['SomeClassTester.java', 'RefSomeClass.java'],
+    [STUDENT_PATH + 'SomeClass.java', STUDENT_PATH + 'RefSomeClass.java', STUDENT_PATH + 'SomeClassTester.java'])
+some_class_output = get_student_output(some_class_failures, some_class_points, 'SomeClassTester')
+all_tests += some_class_output
 
 ################################################################################################
 # Print results.json
 ################################################################################################
+
+total_score = {
+    'output': ('Grading Summary:\n \n'
+               + " Ensure that you've submitted all required files and that"
+               + " your code compiles to receive credit. The autograder has run 1 test on"
+               + " each of your 4 methods. If you fail one of the 4 method tests below,"
+               + " the output message will show the comparison between the expected output"
+               + " and the output generated by your method."
+               + "\n \n Autograding [4 points] \n"
+               + " (1 point) for passing each method test"
+               + "\n \n Manual Grading [2 points] \n"
+               + " Commenting and style: your methods must have proper headers and files"
+               + " must have consistent indentation."),
+    'tests': all_tests
+}
 output_score(total_score)
