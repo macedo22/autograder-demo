@@ -14,9 +14,9 @@ Adapted from Joseph Politz, 2018
      'expected:<12> but was:<8>'}
 
     Here the key may be longer than the message, and uniquely identifies
-    the test method that was run. This file is copied over (in `grade.py`)
-    into the local student `../../submission` directory or
-    `/autograder/submission`on Gradescope.
+    the test method that was run. This file is copied over (in grade.py)
+    into the local student ../../submission directory or
+    /autograder/submission on Gradescope.
 
 `pa1-implementation/`
   
@@ -30,7 +30,7 @@ Adapted from Joseph Politz, 2018
 
   Reference implementations of methods required of the students.
   For each test in `SomeClassTester.java`, a method from the student's submission
-  is called, thecorresponding reference method from this class is called, and
+  is called, the corresponding reference method from this class is called, and
   the results are compared. This file is copied over (in `grade.py`) into the
   local student `../../submission` directory or `/autograder/submission`on Gradescope.
 
@@ -40,7 +40,7 @@ Adapted from Joseph Politz, 2018
   
 `grade`
 
-  The entrypoint for the grader (called from `../run_autograder`). Calls `grade.py`.
+  The entrypoint for the grader (called from `../run_autograder` on Gradescope). Calls `grade.py`.
 
 `grade.py`
 
