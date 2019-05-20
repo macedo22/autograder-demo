@@ -5,18 +5,18 @@ import java.util.Arrays;
 public class SomeClassTester {
     final int timeLimit = 30000;
 
-	@Test(timeout = timeLimit)
+    @Test(timeout = timeLimit)
     public void testAddTwoInts(){
         int studentResult = SomeClass.addTwoInts(5, 3);
         int refResult = RefSomeClass.addTwoInts(5, 3);
-		assertEquals(refResult, studentResult);
-	}
+        assertEquals(refResult, studentResult);
+    }
 
     @Test(timeout = timeLimit)
     public void testMultiplyTwoInts(){
         int studentResult = SomeClass.multiplyTwoInts(2, 2);
         int refResult = RefSomeClass.multiplyTwoInts(2, 2);
-		assertEquals(refResult, studentResult);
+        assertEquals(refResult, studentResult);
     }
 
     @Test(timeout = timeLimit)
@@ -32,6 +32,6 @@ public class SomeClassTester {
         String[] arr = {"Concat", "These", "Strings"};
         String studentResult = SomeClass.concatStringArray(arr);
         String refResult = RefSomeClass.concatStringArray(arr);
-		assertEquals(refResult, studentResult);
+        assertEquals(refResult, studentResult);
     }
 }

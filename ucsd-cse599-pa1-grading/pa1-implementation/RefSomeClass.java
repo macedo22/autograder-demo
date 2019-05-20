@@ -4,7 +4,7 @@ public class RefSomeClass {
 
     static int addTwoInts(int a, int b) {
         return a + b;
-	}
+    }
 
     static int multiplyTwoInts(int a, int b) {
         return a * b;

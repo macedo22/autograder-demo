@@ -62,6 +62,7 @@ def compile_test(classpath, files_to_compile):
         return studentCompileError
 
 
+# Run tests on student code
 def run(RUNNER, RUNNERCLASS, files_to_copy, files_to_compile):
     classpath = STUDENT_PATH + ':' + BASE_CLASSPATH
     call(["cp", os.path.join('./json-graders/' + RUNNER), STUDENT_PATH])
