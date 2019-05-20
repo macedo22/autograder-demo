@@ -1,6 +1,6 @@
 # autograder-demo
 
-**See Joe Politz setup recommendations: https://github.com/ucsd-cse12-w17/pa-grading**
+**See Joe Politz's setup recommendations: https://github.com/ucsd-cse12-w17/pa-grading**
 
 `run_autograder`
 
