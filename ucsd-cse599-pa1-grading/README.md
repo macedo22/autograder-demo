@@ -1,9 +1,10 @@
 # Grader for pa1
+
 Adapted from Joseph Politz, 2018
 
 `json-graders/JSONRunner.java`
   
-    This file runs the test suite in [insert test file] and prints the
+    This file runs the test suite in `pa1-implementation/SomeClassTester.java` and prints the
     results in JSON format to standard out. The results map from test header to
     test output. For example:
 
