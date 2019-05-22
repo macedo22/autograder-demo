@@ -100,8 +100,6 @@ def get_student_output(test_failures, test_points, test_location):
                 })
             else:
                 failure_msg = test_failures[name]
-                if 'No X11 DISPLAY variable was set' in failure_msg:
-                    failure_msg = 'Please remove any calls to the explore or play method from this method'
                 student_results.append({
                     'score': 0,
                     'name': name + ' [Failed]',
