@@ -2,6 +2,8 @@
 
 **See Joe Politz's setup recommendations: https://github.com/ucsd-cse12-w17/pa-grading**
 
+**See Gradescope autograder specifications on file hierarchy and output: https://gradescope-autograders.readthedocs.io/en/latest/specs/**
+
 To run this autograder locally:
 
 1) Clone this repository and create a local directory named `submission` in
